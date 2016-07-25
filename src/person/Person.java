@@ -1,3 +1,5 @@
+package person;
+
 /**
  * Created by aleksejpluhin on 25.07.16.
  */
@@ -57,28 +59,12 @@ public class Person {
         return false;
     }
 
-    public static void main(String[] args) {
-        Person alex = new Person(true, "Alex");
-        Person maria = new Person(false, "Maria");
-        Person pavel = new Person(true, "Pavel");
-        Person alina = new Person(false, "Alina");
 
-        alex.marry(pavel);
-        System.out.println(String.valueOf(alex.spouse));
-        alex.marry(maria);
-        System.out.println("Alex spouse: " + alex.spouse.name);
-        alex.marry(alina);
-        System.out.println("Alex spouse: " + alex.spouse.name);
-        maria.marry(pavel);
-        System.out.println("Maria spouse: " + maria.spouse.name);
-        alex.marry(alina);
-        System.out.println("Alex spouse: " + alex.spouse.name);
-        alex.marry(maria);
-        System.out.println("Alex spouse : " + alex.spouse.name + ", Maria spouse: " + maria.spouse.name + ", Pavel spouse: " + pavel.spouse
-        + ", Alina spouse: " + alina.spouse);
-        alex.marry(maria);
-
+    public String getName() {
+        return name;
     }
 
-
+    public Person getSpouse() {
+        return spouse;
+    }
 }
