@@ -1,6 +1,6 @@
-package main;
+package home2.main;
 
-import person.Person;
+import home2.person.Person;
 
 /**
  * Created by aleksejpluhin on 25.07.16.

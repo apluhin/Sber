@@ -1,4 +1,4 @@
-package person;
+package home2.person;
 
 /**
  * Created by aleksejpluhin on 25.07.16.
