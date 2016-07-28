@@ -40,6 +40,9 @@ public class Solution1 {
             if (integerIntegerEntry.getValue() > 0) {
                 int value = integerIntegerEntry.getValue();
                 map.put(integerIntegerEntry.getKey(), value - 1);
+                if(map.get(integerIntegerEntry.getKey()) == 0) {
+                    map.remove(integerIntegerEntry.getKey());
+                }
                 return integerIntegerEntry.getKey();
             }
         }
