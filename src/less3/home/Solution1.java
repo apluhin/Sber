@@ -1,8 +1,7 @@
-package less3;
+package less3.home;
 
-import java.io.BufferedReader;
+
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.*;
 
 /**
@@ -10,12 +9,12 @@ import java.util.*;
  */
 public class Solution1 {
     public static void main(String[] args) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        Scanner scanner = new Scanner(System.in);
 
-        int n = Integer.parseInt(reader.readLine());
+        int n = Integer.parseInt(scanner.nextLine());
         Map<Integer, Integer> map = new TreeMap<>();
         while (n > 0) {
-            String[] arr = reader.readLine().split(" ");
+            String[] arr = scanner.nextLine().split(" ");
 
             if (arr.length == 1) {
                 System.out.println(min(map));
@@ -33,6 +32,7 @@ public class Solution1 {
             n--;
         }
 
+
     }
 
     public static int min(Map<Integer, Integer> map) {
@@ -40,7 +40,7 @@ public class Solution1 {
             if (integerIntegerEntry.getValue() > 0) {
                 int value = integerIntegerEntry.getValue();
                 map.put(integerIntegerEntry.getKey(), value - 1);
-                if(map.get(integerIntegerEntry.getKey()) == 0) {
+                if (map.get(integerIntegerEntry.getKey()) == 0) {
                     map.remove(integerIntegerEntry.getKey());
                 }
                 return integerIntegerEntry.getKey();
@@ -48,4 +48,6 @@ public class Solution1 {
         }
         return 0;
     }
+
+
 }
