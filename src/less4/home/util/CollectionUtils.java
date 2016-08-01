@@ -59,7 +59,7 @@ public class CollectionUtils {
 
 
     public static <T> List<T> range(List<T> list, T min, T max) {
-        List<T> temp = list;
+        List<T> temp = new ArrayList<>(list);
         Collections.sort(temp, (o1, o2) -> Integer.compare(o1.hashCode(), o2.hashCode()));
         if (temp.indexOf(min) < temp.indexOf(max)) {
             return temp.subList(temp.indexOf(min), temp.indexOf(max));
@@ -70,7 +70,7 @@ public class CollectionUtils {
 
 
     public static <T> List<T> range(List<T> list, T min, T max, Comparator<? super T> comparator) {
-        List<T> temp = list;
+        List<T> temp = new ArrayList<>(list);
         Collections.sort(list, comparator);
         if (temp.indexOf(min) < temp.indexOf(max)) {
             return temp.subList(temp.indexOf(min), temp.indexOf(max));
