@@ -55,11 +55,7 @@ public class CountMapImpl<E> implements CountMap<E> {
     @Override
     public <T extends E> void addAll(CountMap<T> source) {
 
-        Iterator<? extends E> iterator = source.iterator();
-
-        while (iterator.hasNext()) {
-            T key = (T) iterator.next();
-
+        for (T key : source) {
             if (this.map.containsKey(key)) {
                 this.map.put(key, this.map.get(key) + source.getCount(key));
             } else {
@@ -72,21 +68,16 @@ public class CountMapImpl<E> implements CountMap<E> {
 
     @Override
     public void toMap(Map<? super E, Integer> destination) {
-        Iterator<E> iterator = this.iterator();
-        while (iterator.hasNext()) {
-            E iter = iterator.next();
+        for (E iter : this) {
             destination.put(iter, this.getCount(iter));
         }
     }
 
     @Override
     public Map<E, Integer> toMap() {
-        Map<E, Integer> map = new HashMap<>();
-        for (E iter : this) {
-            map.put(iter, this.getCount(iter));
-        }
-        return map;
+        return new HashMap<>(this.map);
     }
+
 
 
     @Override
