@@ -1,10 +1,7 @@
 package less5.home.terminal.impl;
 
 import less5.home.terminal.Terminal;
-import less5.home.terminal.exception.AccountIsLockedException;
-import less5.home.terminal.exception.MoneyFormatException;
-import less5.home.terminal.exception.PinValidatorException;
-import less5.home.terminal.exception.ServerError;
+import less5.home.terminal.exception.*;
 import less5.home.terminal.server.TerminalServer;
 
 public class TerminalImpl implements Terminal {
@@ -34,28 +31,37 @@ public class TerminalImpl implements Terminal {
     @Override
     public int getMoney() {
         int money = 0;
+        try {
 
-        if (checkBlock()) {
-            try {
-                money = server.getMoney();
-            } catch (ServerError serverError) {
-                System.out.println(serverError.getMessage());
+            if (checkBlock()) {
+                try {
+                    money = server.getMoney();
+                } catch (ServerError serverError) {
+                    throw new TerminalException("Error during transaction", serverError);
+                }
             }
+        } catch (TerminalException e) {
+            System.out.println(e.getMessage());
         }
+
         return money;
     }
 
     @Override
     public void putMoney(int money) {
         try {
-            if (checkBlock()) {
-                if (money % 100 != 0) {
-                    throw new MoneyFormatException("Используйте купюры кратные 100");
+            try {
+                if (checkBlock()) {
+                    if (money % 100 != 0) {
+                        throw new MoneyFormatException("Используйте купюры кратные 100");
+                    }
+                    server.putMoney(money);
                 }
-                server.putMoney(money);
-            }
 
-        } catch (MoneyFormatException | ServerError e) {
+            } catch (MoneyFormatException | ServerError e) {
+                throw new TerminalException("Error during put money", e);
+            }
+        } catch (TerminalException e) {
             System.out.println(e.getMessage());
         }
     }

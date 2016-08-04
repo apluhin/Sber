@@ -33,6 +33,7 @@ public class TerminalServer {
         } else {
             throw new ServerError("need authorization");
         }
+
     }
 
 
