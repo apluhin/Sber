@@ -1,6 +1,6 @@
 package less5.home.terminal.exception;
 
-public class TerminalException extends Exception {
+public class TerminalException extends RuntimeException {
 
     public TerminalException() {
     }

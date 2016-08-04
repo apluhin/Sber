@@ -21,8 +21,12 @@ public class TerminalImpl implements Terminal {
     @Override
     public boolean checkAccount(Integer numCard, Integer pin) {
         boolean check = false;
-        if (checkBlock()) {
-            check = authorization(numCard, pin);
+        try {
+            if (server.checkBlock()) {
+                check = server.checkAccount(numCard, pin);
+            }
+        } catch (AccountIsLockedException | PinValidatorException e) {
+            throw new TerminalException("Error during check acount", e);
         }
         return check;
     }
@@ -33,15 +37,13 @@ public class TerminalImpl implements Terminal {
         int money = 0;
         try {
 
-            if (checkBlock()) {
-                try {
+            if (server.checkBlock()) {
+
                     money = server.getMoney();
-                } catch (ServerError serverError) {
-                    throw new TerminalException("Error during transaction", serverError);
-                }
+
             }
-        } catch (TerminalException e) {
-            System.out.println(e.getMessage());
+        } catch (ServerError e) {
+            throw new TerminalException("Error during put money", e);
         }
 
         return money;
@@ -50,48 +52,18 @@ public class TerminalImpl implements Terminal {
     @Override
     public void putMoney(int money) {
         try {
-            try {
-                if (checkBlock()) {
-                    if (money % 100 != 0) {
-                        throw new MoneyFormatException("Используйте купюры кратные 100");
-                    }
-                    server.putMoney(money);
+
+            if (server.checkBlock()) {
+                if (money % 100 != 0) {
+                    throw new MoneyFormatException("Используйте купюры кратные 100");
                 }
-
-            } catch (MoneyFormatException | ServerError e) {
-                throw new TerminalException("Error during put money", e);
+                server.putMoney(money);
             }
-        } catch (TerminalException e) {
-            System.out.println(e.getMessage());
+
+        } catch (MoneyFormatException | ServerError e) {
+            throw new TerminalException("Error during put money", e);
+
         }
-    }
-
-    private boolean authorization(Integer numCard, Integer pin) {
-        try {
-            return server.checkAccount(numCard, pin);
-        } catch (AccountIsLockedException e) {
-            this.waitSecond = System.currentTimeMillis();
-            System.out.println(e.getMessage());
-        } catch (PinValidatorException e) {
-            System.out.println(e.getMessage());
-        }
-        return false;
-    }
-
-
-    private boolean checkBlock() {
-
-        if (waitSecond != 0 && System.currentTimeMillis() - waitSecond < 5000) {
-            try {
-                throw new AccountIsLockedException("Wait " + (5000 - (System.currentTimeMillis() - waitSecond) + " ms"));
-            } catch (AccountIsLockedException e) {
-                System.out.println(e.getMessage());
-            }
-        } else if (waitSecond != 0 && System.currentTimeMillis() - waitSecond > 5000) {
-            this.waitSecond = 0;
-            return true;
-        }
-        return true;
     }
 
 
