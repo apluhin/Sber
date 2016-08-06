@@ -1,6 +1,9 @@
 package less3.home;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.TreeMap;
 
 /**
  * Created by aleksejpluhin on 30.07.16.

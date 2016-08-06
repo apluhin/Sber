@@ -1,6 +1,6 @@
-package home2.main;
+package less2.home.main;
 
-import home2.person.Person;
+import less2.home.person.Person;
 
 /**
  * Created by aleksejpluhin on 25.07.16.

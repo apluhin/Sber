@@ -2,7 +2,9 @@ package less3.home;
 
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.TreeMap;
 
 /**
  * Created by aleksejpluhin on 28.07.16.

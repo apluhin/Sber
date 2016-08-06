@@ -1,4 +1,4 @@
-package home2.person;
+package less2.home.person;
 
 /**
  * Created by aleksejpluhin on 25.07.16.
@@ -18,6 +18,14 @@ public class Person {
 
         this.name = name;
 
+    }
+
+    public boolean isMan() {
+        return man;
+    }
+
+    public void setSpouse(Person spouse) {
+        this.spouse = spouse;
     }
 
 
