@@ -23,17 +23,22 @@ public class BeanUtils {
      * @param from Object which properties will be used to get values.
      */
     public static void assign(Object to, Object from) {
-        Stream.of(from.getClass().getMethods()).filter(s -> s.getName().startsWith("get")).forEach(s -> workMethod(from, to, s));
+        Stream.of(from.getClass().getMethods()).filter(s -> s.getDeclaringClass().equals(from.getClass()))
+                .filter(s -> s.getName().startsWith("get") && Character.isUpperCase(s.getName().charAt(3)))
+                .forEach(s -> workMethod(from, to, s));
     }
 
     private static void workMethod(Object from, Object to, Method s) {
+        System.out.println(s);
         String nameMethod = "set" + s.getName().substring(3, s.getName().length());
         try {
             Class returnType = s.getReturnType();  /// String return type from
             Method m = null;
             while (returnType != null) {
                 try {
+
                     m = to.getClass().getMethod(nameMethod, returnType);
+
                     break;
                 } catch (NoSuchMethodException e) {
                     returnType = returnType.getSuperclass();
