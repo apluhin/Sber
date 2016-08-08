@@ -2,6 +2,8 @@ package less6.home;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.stream.Stream;
 
 
@@ -29,7 +31,6 @@ public class BeanUtils {
     }
 
     private static void workMethod(Object from, Object to, Method s) {
-        System.out.println(s);
         String nameMethod = "set" + s.getName().substring(3, s.getName().length());
         try {
             Class returnType = s.getReturnType();  /// String return type from
@@ -57,12 +58,16 @@ public class BeanUtils {
     }
 
     public static void main(String[] args) {
-        PersonGen<String, Object, Integer> from = new PersonGen<>("String", new Object(), 1);
-        PersonGen<Object, Object, Number> to = new PersonGen<>(null, null, null);
+        PersonGen1 from = new PersonGen1(1, 1d, "test", new Date(), new SimpleDateFormat());
+        PersonGen2 to = new PersonGen2(null, null, null, null, null);
+        long a = System.currentTimeMillis();
         assign(to, from);
+        System.out.println(System.currentTimeMillis() - a);
         System.out.println(from.getObj1().equals(to.getObj1()) + " " + to.getObj1());
         System.out.println(from.getObj2().equals(to.getObj2()) + " " + to.getObj2());
         System.out.println(from.getObj3().equals(to.getObj3()) + " " + to.getObj3());
+        System.out.println(from.getObj4().equals(to.getObj4()) + " " + to.getObj4());
+        System.out.println(from.getObj5().equals(to.getObj5()) + " " + to.getObj5());
 
     }
 
