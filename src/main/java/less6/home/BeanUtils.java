@@ -8,6 +8,9 @@ import java.util.stream.Stream;
 
 
 public class BeanUtils {
+
+    static long a;
+
     /**
      * Scans object "from" for all getters. If object "to"
      * contains correspondent setter, it will invoke it
@@ -25,7 +28,8 @@ public class BeanUtils {
      * @param from Object which properties will be used to get values.
      */
     public static void assign(Object to, Object from) {
-        Stream.of(from.getClass().getMethods()).filter(s -> s.getDeclaringClass().equals(from.getClass()))
+        a = System.currentTimeMillis();
+        Stream.of(from.getClass().getMethods()).parallel().filter(s -> s.getDeclaringClass().equals(from.getClass()))
                 .filter(s -> s.getName().startsWith("get") && Character.isUpperCase(s.getName().charAt(3)))
                 .forEach(s -> workMethod(from, to, s));
     }
@@ -54,15 +58,15 @@ public class BeanUtils {
         } catch (InvocationTargetException | IllegalAccessException e) {
             System.out.println(e.getMessage());
         }
+        System.out.println(System.currentTimeMillis() - a);
 
     }
 
     public static void main(String[] args) {
         PersonGen1 from = new PersonGen1(1, 1d, "test", new Date(), new SimpleDateFormat());
         PersonGen2 to = new PersonGen2(null, null, null, null, null);
-        long a = System.currentTimeMillis();
         assign(to, from);
-        System.out.println(System.currentTimeMillis() - a);
+        System.out.println(System.currentTimeMillis() - a + " end");
         System.out.println(from.getObj1().equals(to.getObj1()) + " " + to.getObj1());
         System.out.println(from.getObj2().equals(to.getObj2()) + " " + to.getObj2());
         System.out.println(from.getObj3().equals(to.getObj3()) + " " + to.getObj3());
