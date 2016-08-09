@@ -2,6 +2,7 @@ package less6.home;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.stream.Stream;
@@ -9,7 +10,6 @@ import java.util.stream.Stream;
 
 public class BeanUtils {
 
-    static long a;
 
     /**
      * Scans object "from" for all getters. If object "to"
@@ -28,50 +28,51 @@ public class BeanUtils {
      * @param from Object which properties will be used to get values.
      */
     public static void assign(Object to, Object from) {
-        a = System.currentTimeMillis();
-        Stream.of(from.getClass().getMethods()).parallel().filter(s -> s.getDeclaringClass().equals(from.getClass()))
-                .filter(s -> s.getName().startsWith("get") && Character.isUpperCase(s.getName().charAt(3)))
+        Class setClass = to.getClass();
+        Stream.of(setClass.getMethods()).filter(s -> s.getDeclaringClass().equals(setClass) &&
+                s.getName().startsWith("set") && Character.isUpperCase(s.getName().charAt(3)))
                 .forEach(s -> workMethod(from, to, s));
     }
 
     private static void workMethod(Object from, Object to, Method s) {
-        String nameMethod = "set" + s.getName().substring(3, s.getName().length());
+        String nameMethod = "get" + s.getName().substring(3, s.getName().length());
         try {
-            Class returnType = s.getReturnType();  /// String return type from
-            Method m = null;
-            while (returnType != null) {
-                try {
-
-                    m = to.getClass().getMethod(nameMethod, returnType);
-
-                    break;
-                } catch (NoSuchMethodException e) {
-                    returnType = returnType.getSuperclass();
-                }
-
+            Method m = from.getClass().getMethod(nameMethod);
+            if (m != null && isSubClass(m.getReturnType(), s.getParameters())) {
+                s.invoke(to, m.invoke(from));
             }
-            if (m == null) {
-            } else {
-                m.invoke(to, s.invoke(from));
 
-            }
-        } catch (InvocationTargetException | IllegalAccessException e) {
+        } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
             System.out.println(e.getMessage());
         }
-        System.out.println(System.currentTimeMillis() - a);
 
+
+    }
+
+    private static boolean isSubClass(Class<?> returnType, Parameter[] parameters) {
+        if (parameters.length > 1) {
+            return false;
+        }
+        while (returnType != null) {
+            if (returnType == parameters[0].getType()) {
+                return true;
+            } else {
+                returnType = returnType.getSuperclass();
+            }
+        }
+        return false;
     }
 
     public static void main(String[] args) {
         PersonGen1 from = new PersonGen1(1, 1d, "test", new Date(), new SimpleDateFormat());
-        PersonGen2 to = new PersonGen2(null, null, null, null, null);
+        PersonGen2 to = new PersonGen2(1d, 1, new Object(), null, null);
         assign(to, from);
-        System.out.println(System.currentTimeMillis() - a + " end");
         System.out.println(from.getObj1().equals(to.getObj1()) + " " + to.getObj1());
         System.out.println(from.getObj2().equals(to.getObj2()) + " " + to.getObj2());
         System.out.println(from.getObj3().equals(to.getObj3()) + " " + to.getObj3());
         System.out.println(from.getObj4().equals(to.getObj4()) + " " + to.getObj4());
         System.out.println(from.getObj5().equals(to.getObj5()) + " " + to.getObj5());
+
 
     }
 

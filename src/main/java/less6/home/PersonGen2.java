@@ -7,7 +7,7 @@ public class PersonGen2 {
     Number obj1;
     Number obj2;
     Object obj3;
-    Date obj4;
+    Object obj4;
     SimpleDateFormat obj5;
 
     public void setObj1(Number obj1) {
@@ -25,6 +25,12 @@ public class PersonGen2 {
     public void setObj4(Date obj4) {
         this.obj4 = obj4;
     }
+
+    public void setObj4(String a) {
+        this.obj4 = a;
+    }
+
+
 
     public void setObj5(SimpleDateFormat obj5) {
         this.obj5 = obj5;
@@ -50,11 +56,13 @@ public class PersonGen2 {
         return obj3;
     }
 
-    public Date getObj4() {
+    public Object getObj4() {
         return obj4;
     }
 
     public SimpleDateFormat getObj5() {
         return obj5;
     }
+
+
 }
