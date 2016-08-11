@@ -30,12 +30,12 @@ public class BeanUtils {
     public static void assign(Object to, Object from) {
         Class setClass = to.getClass();
         Stream.of(setClass.getMethods()).filter(s -> s.getDeclaringClass().equals(setClass) &&
-                s.getName().startsWith("set") && Character.isUpperCase(s.getName().charAt(3)))
+                s.getName().matches("^set[A-Z].*$"))
                 .forEach(s -> workMethod(from, to, s));
     }
 
     private static void workMethod(Object from, Object to, Method s) {
-        String nameMethod = "get" + s.getName().substring(3, s.getName().length());
+        String nameMethod = s.getName().replaceFirst("^set", "get");
         try {
             Method m = from.getClass().getMethod(nameMethod);
             if (m != null && isSubClass(m.getReturnType(), s.getParameters())) {
