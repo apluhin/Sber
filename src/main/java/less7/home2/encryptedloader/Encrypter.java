@@ -14,6 +14,7 @@ public class Encrypter {
         this.key = key;
     }
 
+    //Метод гаммирования 
     public void encrypt(String name) throws IOException {
         File output = new File(dir.getPath() + "/" + name.replace(".class", ".txt"));
 
