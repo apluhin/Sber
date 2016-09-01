@@ -1,6 +1,7 @@
 package less12.jmm.home;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ScalableThreadPool implements ThreadPool {
 
@@ -15,7 +16,7 @@ public class ScalableThreadPool implements ThreadPool {
     private volatile boolean isStart = false;
     private final List<Worker> workerList = new ArrayList<>();
 
-    public ScalableThreadPool(int minCountThread, int maxCountThread) {
+    ScalableThreadPool(int minCountThread, int maxCountThread) {
         this.minCountThread = minCountThread;
         this.maxCountThread = maxCountThread;
     }
@@ -24,13 +25,12 @@ public class ScalableThreadPool implements ThreadPool {
     @Override
     public void execute(Runnable runnable) {
         checkStart();
-        synchronized (lock) {
-            tasks.add(runnable);
-        }
+        tasks.add(runnable);
         synchronized (lockOnList) {
-            if (isFreeThread()) {
-            } else if (workerList.size() < maxCountThread) {
-                startWorker();
+            if (!isFreeThread()) {
+                if (workerList.size() < maxCountThread) {
+                    startWorker();
+                }
             }
         }
         synchronized (lock) {
@@ -39,7 +39,7 @@ public class ScalableThreadPool implements ThreadPool {
     }
 
     private void checkStart() {
-        if(!isStart) {
+        if (!isStart) {
             isStart = true;
             start();
         }
@@ -99,7 +99,7 @@ public class ScalableThreadPool implements ThreadPool {
                 synchronized (lock) {
                     while (tasks.isEmpty()) {
                         try {
-                            if(checkWorker()) return;
+                            if (checkWorker()) return;
                             lock.wait();
                             if (isShutdown()) return;
                         } catch (InterruptedException e) {
@@ -125,11 +125,11 @@ public class ScalableThreadPool implements ThreadPool {
 
         private boolean checkWorker() {
             synchronized (lockOnList) {
-                if (!tasks.isEmpty()) {
-
-                } else if (workerList.size() > minCountThread) {
-                    workerList.remove(this);
-                    return true;
+                if (tasks.isEmpty()) {
+                    if (workerList.size() > minCountThread) {
+                        workerList.remove(this);
+                        return true;
+                    }
                 }
             }
             return false;
@@ -140,6 +140,5 @@ public class ScalableThreadPool implements ThreadPool {
         }
 
     }
-
 
 }

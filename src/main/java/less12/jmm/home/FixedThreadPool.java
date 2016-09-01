@@ -16,8 +16,8 @@ public class FixedThreadPool implements ThreadPool {
 
     @Override
     public void execute(Runnable runnable) {
+        tasks.add(runnable);
         synchronized (lock) {
-            tasks.add(runnable);
             lock.notify();
         }
     }
