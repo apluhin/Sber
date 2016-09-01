@@ -16,8 +16,8 @@ public class FixedThreadPool implements ThreadPool {
 
     @Override
     public void execute(Runnable runnable) {
-        tasks.add(runnable);
         synchronized (lock) {
+            tasks.add(runnable);
             lock.notify();
         }
     }
@@ -63,7 +63,7 @@ public class FixedThreadPool implements ThreadPool {
                     while (tasks.isEmpty()) {
                         try {
                             lock.wait();
-                            if(isShutdown()) return;
+                            if (isShutdown()) return;
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
