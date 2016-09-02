@@ -55,7 +55,7 @@ public class ScalableThreadPool implements ThreadPool {
     }
 
     private void startWorker() {
-        Worker worker = new Worker(this);
+        Worker worker = new Worker();
         workerList.add(worker);
         worker.start();
     }
@@ -85,12 +85,8 @@ public class ScalableThreadPool implements ThreadPool {
 
 
     private class Worker extends Thread {
-        private final ThreadPool threadPool;
         private Runnable current;
 
-        Worker(ThreadPool threadPool) {
-            this.threadPool = threadPool;
-        }
 
         @Override
         public void run() {
@@ -134,9 +130,6 @@ public class ScalableThreadPool implements ThreadPool {
             return false;
         }
 
-        private boolean isShutdown() {
-            return threadPool.isShutdown();
-        }
 
     }
 

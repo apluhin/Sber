@@ -25,7 +25,7 @@ public class FixedThreadPool implements ThreadPool {
     public void start() {
         //start all
         for (int i = 0; i < countThread; i++) {
-            new Worker(this).start();
+            new Worker().start();
         }
         synchronized (lock) {
             lock.notifyAll();
@@ -49,12 +49,9 @@ public class FixedThreadPool implements ThreadPool {
 
 
     private class Worker extends Thread {
-        private final ThreadPool threadPool;
+
         private Runnable current;
 
-        Worker(ThreadPool threadPool) {
-            this.threadPool = threadPool;
-        }
 
         @Override
         public void run() {
@@ -81,9 +78,6 @@ public class FixedThreadPool implements ThreadPool {
             }
         }
 
-        private boolean isShutdown() {
-            return threadPool.isShutdown();
-        }
 
     }
 }
