@@ -1,7 +1,6 @@
 package less12.jmm.home;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class ScalableThreadPool implements ThreadPool {
 
@@ -12,8 +11,8 @@ public class ScalableThreadPool implements ThreadPool {
     private final Queue<Runnable> tasks = new ArrayDeque<>();
     private final Object lock = new Object();
     private final Object lockOnList = new Object();
-    private volatile boolean stop = false;
-    private volatile boolean isStart = false;
+    private boolean isStop = false;
+    private boolean isStart = false;
     private final List<Worker> workerList = new ArrayList<>();
 
     ScalableThreadPool(int minCountThread, int maxCountThread) {
@@ -63,7 +62,7 @@ public class ScalableThreadPool implements ThreadPool {
 
     @Override
     public void shutdown() {
-        stop = true;
+        isStop = true;
         synchronized (lock) {
             lock.notifyAll();
         }
@@ -71,7 +70,7 @@ public class ScalableThreadPool implements ThreadPool {
 
     @Override
     public boolean isShutdown() {
-        return stop;
+        return isStop;
     }
 
 
