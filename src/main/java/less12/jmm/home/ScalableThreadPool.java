@@ -1,6 +1,9 @@
 package less12.jmm.home;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Queue;
 
 public class ScalableThreadPool implements ThreadPool {
 
@@ -11,9 +14,9 @@ public class ScalableThreadPool implements ThreadPool {
     private final Queue<Runnable> tasks = new ArrayDeque<>();
     private final Object lock = new Object();
     private final Object lockOnList = new Object();
+    private final List<Worker> workerList = new ArrayList<>();
     private boolean isStop = false;
     private boolean isStart = false;
-    private final List<Worker> workerList = new ArrayList<>();
 
     ScalableThreadPool(int minCountThread, int maxCountThread) {
         this.minCountThread = minCountThread;
@@ -108,7 +111,7 @@ public class ScalableThreadPool implements ThreadPool {
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
-               
+
             }
         }
 
@@ -127,5 +130,6 @@ public class ScalableThreadPool implements ThreadPool {
 
 
     }
+
 
 }
