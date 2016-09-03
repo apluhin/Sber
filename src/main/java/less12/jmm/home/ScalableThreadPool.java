@@ -108,15 +108,10 @@ public class ScalableThreadPool implements ThreadPool {
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
-                synchronized (lock) {
-                    if (reviewThread()) return;
-                }
+               
             }
         }
 
-        private boolean reviewThread() {
-            return checkWorker() || isShutdown();
-        }
 
         private boolean checkWorker() {
             synchronized (lockOnList) {
