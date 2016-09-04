@@ -20,8 +20,10 @@ public class EqualLockService implements Service {
     @Override
     public void run(Object o) {
         map.putIfAbsent(o, new ReentrantLock());
-        map.getOrDefault(o, nullLock).lock();
+        ReentrantLock reentrantLock = map.getOrDefault(o, nullLock);
+        reentrantLock.lock();
         try {
+            if (!map.containsKey(o) && reentrantLock != nullLock) map.put(o, reentrantLock);
             service.run(o);
         } finally {
             if (nullLock.isHeldByCurrentThread()) {
