@@ -1,10 +1,6 @@
-package less14.home;
+package less14.home.service;
 
-import less14.home.service.EqualLockService;
-import less14.home.service.Service;
-import less14.home.service.SlowService;
-
-public class Main {
+public class TestMain {
     public static void main(String[] args) {
         Service service = new EqualLockService(new SlowService());
         Runnable runnable = () -> service.run(1);
