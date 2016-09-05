@@ -45,19 +45,36 @@ public class EqualLockService implements Service {
 
     private Integer getInteger(Object o) {
         Integer current;
-        synchronized (map.putIfAbsent(o, new AtomicIntegerArray(new int[]{0, 0}))) {
-            current = map.get(o).incrementAndGet(0);
-            if (map.get(o).get(0) == 1) {
-                return 1;
+        try {
+            synchronized (map.putIfAbsent(o, new AtomicIntegerArray(new int[]{0, 0}))) {
+                current = map.get(o).incrementAndGet(0);
+                if (map.get(o).get(0) == 1) {
+                    return 1;
+                }
+                while (map.get(o).get(1) != current) {
+                    try {
+                        map.get(o).wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-            while (map.get(o).get(1) != current) {
-                try {
-                    map.get(o).wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        } catch (NullPointerException e) {
+            synchronized (map.get(o)) {
+                current = map.get(o).incrementAndGet(0);
+                if (map.get(o).get(0) == 1) {
+                    return 1;
+                }
+                while (map.get(o).get(1) != current) {
+                    try {
+                        map.get(o).wait();
+                    } catch (InterruptedException e1) {
+                        e1.printStackTrace();
+                    }
                 }
             }
         }
+
 
         return current;
     }
