@@ -4,7 +4,7 @@ public class SlowService implements Service {
     @Override
     public void run(Object o) {
         try {
-            Thread.sleep(1000);
+            Thread.sleep(200);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

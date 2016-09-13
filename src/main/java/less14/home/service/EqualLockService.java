@@ -57,6 +57,7 @@ public class EqualLockService implements Service {
     public Integer tryGet(AtomicIntegerArray atomicIntegerArray, Object o) {
         Integer current;
         synchronized (atomicIntegerArray) {
+
             current = map.get(o).incrementAndGet(0);
             if (map.get(o).get(0) == 1) {
                 return 1;
