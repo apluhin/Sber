@@ -18,42 +18,34 @@ public class EqualLockService implements Service {
 
     @Override
     public void run(Object o) {
-        map1.compute(o, getLock());
+        map1.compute(o, lock());
         try {
             service.run(o);
         } finally {
             map1.get(o).unlock();
-            map1.compute(o, remove());
+            map1.compute(o, tryRemove());
         }
 
     }
 
-    private BiFunction<Object, ReentrantLock, ReentrantLock> getLock() {
-        BiFunction<Object, ReentrantLock, ReentrantLock> function = new BiFunction<Object, ReentrantLock, ReentrantLock>() {
-            @Override
-            public ReentrantLock apply(Object o, ReentrantLock reentrantLock) {
-                ReentrantLock lock = reentrantLock;
-                if (lock == null) lock = new ReentrantLock();
-                lock.lock();
-                return lock;
-            }
+    private BiFunction<Object, ReentrantLock, ReentrantLock> lock() {
+        return (o, reentrantLock) -> {
+            ReentrantLock lock = reentrantLock;
+            if (lock == null) lock = new ReentrantLock();
+            lock.lock();
+            return lock;
         };
-        return function;
     }
 
-    private BiFunction<Object, ReentrantLock, ReentrantLock> remove() {
-        BiFunction<Object, ReentrantLock, ReentrantLock> function = new BiFunction<Object, ReentrantLock, ReentrantLock>() {
-            @Override
-            public ReentrantLock apply(Object o, ReentrantLock reentrantLock) {
-                if (!(reentrantLock.isLocked() || reentrantLock.hasQueuedThreads())) {
-                    return null;
-                } else {
-                    return reentrantLock;
-                }
-
+    private BiFunction<Object, ReentrantLock, ReentrantLock> tryRemove() {
+        return (o, reentrantLock) -> {
+            if (!(reentrantLock.isLocked() || reentrantLock.hasQueuedThreads())) {
+                return null;
+            } else {
+                return reentrantLock;
             }
+
         };
-        return function;
     }
 
 
