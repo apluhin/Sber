@@ -40,10 +40,7 @@ public class EqualLockService implements Service {
 
     private BiFunction<Object, ReentrantLock, ReentrantLock> tryRemove() {
         return (o, reentrantLock) -> {
-            if (reentrantLock == null) {
-                return null;
-            }
-            if (!(reentrantLock.isLocked() || reentrantLock.hasQueuedThreads())) {
+            if (reentrantLock == null || !(reentrantLock.isLocked() || reentrantLock.hasQueuedThreads())) {
                 return null;
             } else {
                 return reentrantLock;
