@@ -21,6 +21,7 @@ public class EqualLockService implements Service {
         map1.compute(o, lock());
         try {
             service.run(o);
+
         } finally {
             map1.get(o).unlock();
             map1.compute(o, tryRemove());
@@ -39,15 +40,16 @@ public class EqualLockService implements Service {
 
     private BiFunction<Object, ReentrantLock, ReentrantLock> tryRemove() {
         return (o, reentrantLock) -> {
+            if (reentrantLock == null) {
+                return null;
+            }
             if (!(reentrantLock.isLocked() || reentrantLock.hasQueuedThreads())) {
                 return null;
             } else {
                 return reentrantLock;
             }
-
         };
     }
-
 
 
 }
